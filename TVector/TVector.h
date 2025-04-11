@@ -8,8 +8,8 @@ class TVector {
     T* _data;
     int _size;
     int _capacity;
- public:
 
+ public:
     // Constructors
     TVector();
     explicit TVector(int);
@@ -49,8 +49,8 @@ class TVector {
     bool operator!=(const TVector&) const;
     bool operator==(const TVector&) const;
     T& operator[](int);
- private:
 
+ private:
     size_t deleted;
     State* _states;
     bool is_full();
