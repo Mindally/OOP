@@ -16,61 +16,67 @@ void set_color(int text_color, int bg_color) {
 }
 
 namespace TestSystem {
-    int count_success = 0, count_failed = 0;
+int count_success = 0, count_failed = 0;
 
-    void start_test(bool(*test)(), const char* name_of_test) {
+void start_test(bool(*test)(), const char* name_of_test) {
+    set_color(2, 0);
+    std::cout << "[ RUN      ]";
+    set_color(7, 0);
+    std::cout << name_of_test << std::endl;
+
+    bool status = test();
+
+    if (status == true) {
         set_color(2, 0);
-        std::cout << "[ RUN      ]";
-        set_color(7, 0);
-        std::cout << name_of_test << std::endl;
-
-        bool status = test();
-
-        if (status == true) {
-            set_color(2, 0);
-            std::cout << "[       OK ]" << "\n------------\n\n";
-            count_success++;
-        } else {
-            set_color(4, 0);
-            std::cout << "[  FAILED  ]" << "\n------------\n\n";
-            count_failed++;
-        }
-        set_color(7, 0);
+        std::cout << "[       OK ]" << "\n------------\n\n";
+        count_success++;
     }
-
-    template <class T>
-    bool check(const T& expected, const T& actual) {
-        if (expected == actual) {
-            return true;
-        } else {
-            std::cerr << "Expected result is " << expected << ", but actual is " << actual << "." << std::endl;
-            return false;
-        }
+    else {
+        set_color(4, 0);
+        std::cout << "[  FAILED  ]" << "\n------------\n\n";
+        count_failed++;
     }
+    set_color(7, 0);
+}
 
-    void print_init_info() {
-        set_color(2, 0);
-        std::cout << "[==========] " << std::endl;
-        set_color(7, 0);
+template <class T>
+bool check(const T& expected, const T& actual) {
+    if (expected == actual) {
+        return true;
     }
+    else {
+        std::cerr << "Expected result is " << expected
+        << ", but actual is " << actual << "." << std::endl;
+        return false;
+    }
+}
 
-    void print_final_info() {
-        set_color(2, 0);
-        std::cout << "[==========] ";
+void print_init_info() {
+    set_color(2, 0);
+    std::cout << "[==========] " << std::endl;
+    set_color(7, 0);
+}
+
+void print_final_info() {
+    set_color(2, 0);
+    std::cout << "[==========] ";
+    set_color(7, 0);
+    std::cout << count_success + count_failed << " test"
+    << (count_success + count_failed > 1 ? "s" : "") << " ran." << std::endl;
+    set_color(2, 0);
+    std::cout << "[  PASSED  ] ";
+    set_color(7, 0);
+    std::cout << count_success << " test"
+    << (count_success > 1 ? "s" : "") << std::endl;
+    if (count_failed > 0) {
+        set_color(4, 0);
+        std::cout << "[  FAILED  ] ";
         set_color(7, 0);
-        std::cout << count_success + count_failed << " test" << (count_success + count_failed > 1 ? "s" : "") << " ran." << std::endl;
-        set_color(2, 0);
-        std::cout << "[  PASSED  ] ";
-        set_color(7, 0);
-        std::cout << count_success << " test" << (count_success > 1 ? "s" : "") << std::endl;
-        if (count_failed > 0) {
-            set_color(4, 0);
-            std::cout << "[  FAILED  ] ";
-            set_color(7, 0);
-            std::cout << count_failed << " test" << (count_failed > 1 ? "s." : ".") << std::endl;
-        }
+        std::cout << count_failed << " test"
+        <<(count_failed > 1 ? "s." : ".") << std::endl;
     }
-};
+}
+}; // namespace TestSystem
 
 // Constructors
 bool test_1_empty_constructor() {
@@ -85,7 +91,8 @@ bool test_2_empty_constructor_params() {
     TVector<int> empty1;
     bool expected_result = true;
     bool actual_result;
-    if (empty1.size() == 0 && empty1.capacity() == CAPACITY && empty1.deleted_count() == 0 &&
+    if (empty1.size() == 0 && empty1.capacity() == CAPACITY
+    && empty1.deleted_count() == 0 &&
         empty1.data() != nullptr) {
         actual_result = true;
     } else {
@@ -107,7 +114,8 @@ bool test_2_size_constructor_params() {
     vec1.push_front(11);
     bool expected_result = true;
     bool actual_result;
-    if (vec1.size() == 11 && vec1.capacity() == 25 && vec1.deleted_count() == 0 &&
+    if (vec1.size() == 11 && vec1.capacity() == 25
+    && vec1.deleted_count() == 0 &&
         vec1.data() != nullptr && vec1[0] == 11) {
         actual_result = true;
     } else {
@@ -130,7 +138,8 @@ bool test_2_sizedata_constructor_params() {
     TVector<int> vec1(10, arr);
     bool expected_result = true;
     bool actual_result;
-    if (vec1.size() == 10 && vec1.capacity() == 25 && vec1.deleted_count() == 0) {
+    if (vec1.size() == 10 && vec1.capacity() == 25
+    && vec1.deleted_count() == 0) {
         actual_result = true;
         for (int i = 0; i < vec1.size(); i++) {
             if (vec1[i] != i + 1) actual_result = false;
@@ -179,7 +188,8 @@ bool test_2_copy_constructor_params() {
     TVector<int> vec2(vec1);
     bool expected_result = true;
     bool actual_result;
-    if (vec2.size() == 8 && vec2.capacity() == 25 && vec2[1] == 3) actual_result = true;
+    if (vec2.size() == 8 && vec2.capacity() == 25 &&
+    vec2[1] == 3) actual_result = true;
     else actual_result = false;
     return TestSystem::check(expected_result, actual_result);
 }
@@ -197,7 +207,8 @@ bool test_1_is_empty() {
 }
 
 bool test_1_at() {
-    TVector<int> vec1({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }), vec2({ 3, 4, 6, 7, 8 });
+    TVector<int> vec1({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+    TVector<int> vec2({ 3, 4, 6, 7, 8 });
     bool expected_result = true;
     vec1.pop_front();
     vec1.pop_front();
@@ -222,7 +233,8 @@ bool test_2_at_empty() {
         actual_result = true;
     }
     catch (const std::exception & e) {
-        std::cerr << "* An exception has been triggered! " << e.what() << std::endl;
+        std::cerr << "* An exception has been triggered! "
+        << e.what() << std::endl;
         actual_result = false;
     }
     return TestSystem::check(expected_result, actual_result);
@@ -240,7 +252,8 @@ bool test_3_at_assign() {
 
 bool test_1_push_front() {
     bool expected_result = true;
-    TVector<int> vec1({ 1, 2, 3, 4, 5 }), vec2({ -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 });
+    TVector<int> vec1({ 1, 2, 3, 4, 5 });
+    TVector<int> vec2({ -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 });
     info(vec1);
     vec1.push_front(-1);
     vec1.push_front(-2);
@@ -292,7 +305,8 @@ bool test_4_push_front_to_deleted() {
 
 bool test_1_push_back() {
     bool expected_result = true;
-    TVector<int> vec1({ -5, -4, -3, -2, -1 }), vec2({ -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 });
+    TVector<int> vec1({ -5, -4, -3, -2, -1 });
+    TVector<int> vec2({ -5, -4, -3, -2, -1, 1, 2, 3, 4, 5 });
     info(vec1);
     vec1.push_back(1);
     vec1.push_back(2);
@@ -339,7 +353,8 @@ bool test_1_insert_to_invalid_index() {
         actual_result = true;
     }
     catch (const std::exception & e) {
-        std::cerr << "* An exception has been triggered! " << e.what() << std::endl;
+        std::cerr << "* An exception has been triggered! "
+        << e.what() << std::endl;
         actual_result = false;
     }
     return TestSystem::check(expected_result, actual_result);
@@ -400,7 +415,8 @@ bool test_2_pop_front_to_empty() {
         actual_result = true;
     }
     catch (const std::exception & e) {
-        std::cerr << "* An exception has been triggered! " << e.what() << std::endl;
+        std::cerr << "* An exception has been triggered! "
+        << e.what() << std::endl;
         actual_result = false;
     }
     return TestSystem::check(expected_result, actual_result);
@@ -427,7 +443,8 @@ bool test_2_pop_back_to_empty() {
         actual_result = true;
     }
     catch (const std::exception & e) {
-        std::cerr << "* An exception has been triggered! " << e.what() << std::endl;
+        std::cerr << "* An exception has been triggered! "
+        << e.what() << std::endl;
         actual_result = false;
     }
     return TestSystem::check(expected_result, actual_result);
@@ -442,7 +459,8 @@ bool test_1_erase_to_invalid_index() {
         actual_result = true;
     }
     catch (const std::exception & e) {
-        std::cerr << "* An exception has been triggered! " << e.what() << std::endl;
+        std::cerr << "* An exception has been triggered! "
+        << e.what() << std::endl;
         actual_result = false;
     }
     return TestSystem::check(expected_result, actual_result);
@@ -467,7 +485,8 @@ bool test_3_erase_to_empty() {
         actual_result = true;
     }
     catch (const std::exception & e) {
-        std::cerr << "* An exception has been triggered! " << e.what() << std::endl;
+        std::cerr << "* An exception has been triggered! "
+        << e.what() << std::endl;
         actual_result = false;
     }
     return TestSystem::check(expected_result, actual_result);
@@ -560,7 +579,7 @@ bool test_1_emplace() {
 
 bool test_1_assign_empty() {
     bool expected_result = true;
-    TVector<int> vec1({ 1, 2, 3 ,4 }), empty1;
+    TVector<int> vec1({ 1, 2, 3, 4 }), empty1;
     vec1 = empty1;
     info(vec1);
     bool actual_result = (vec1 == empty1);
@@ -569,7 +588,7 @@ bool test_1_assign_empty() {
 
 bool test_2_assign() {
     bool expected_result = true;
-    TVector<int> vec1({ 1, 2, 3 ,4 }), vec2({ 37, 55, -19, 0, 0, 12 });
+    TVector<int> vec1({ 1, 2, 3, 4 }), vec2({ 37, 55, -19, 0, 0, 12 });
     vec1 = vec2;
     info(vec1);
     bool actual_result = (vec1 == vec2);
@@ -580,7 +599,8 @@ bool test_2_assign() {
 // Sorting and Shuffle
 bool test_1_shuffle_and_sorting() {
     bool expected_result = true;
-    TVector<int> vec1({ 1, 2, 3 ,4, 5, 6, 7, 8, 9, 10 }), vec2({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+    TVector<int> vec1({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+    TVector<int> vec2({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     fisherYatesShuffle(vec1);
     info(vec1);
     hoara_sort(vec1, 0, vec1.size() - 1);
@@ -592,7 +612,7 @@ bool test_1_shuffle_and_sorting() {
 // Searches
 bool test_1_searches() {
     bool expected_result = true;
-    TVector<int> vec1({ -11, 2, 7 ,2, 5, 2, 7, 2, 5, 110 });
+    TVector<int> vec1({ -11, 2, 7, 2, 5, 2, 7, 2, 5, 110 });
     info(vec1);
     std::cout << "First 5 index elem = " << find_first(vec1, 5) << std::endl;
     std::cout << "Last 7 index elem = " << find_last(vec1, 7) << std::endl;
@@ -606,25 +626,32 @@ int main() {
     // Constructors
     //    Empty
     TestSystem::start_test(test_1_empty_constructor, "Empty_constructor.test1");
-    TestSystem::start_test(test_2_empty_constructor_params, "Empty_constructor.test2_params");
+    TestSystem::start_test(test_2_empty_constructor_params,
+    "Empty_constructor.test2_params");
 
     //    Size
     TestSystem::start_test(test_1_size_constructor, "Size_constructor.test1");
-    TestSystem::start_test(test_2_size_constructor_params, "Size_constructor.test2_params");
+    TestSystem::start_test(test_2_size_constructor_params,
+    "Size_constructor.test2_params");
 
     //    Size and Data
-    TestSystem::start_test(test_1_sizedata_constructor, "SizeData_constructor.test1");
-    TestSystem::start_test(test_2_sizedata_constructor_params, "SizeData_constructor.test2_params");
+    TestSystem::start_test(test_1_sizedata_constructor,
+    "SizeData_constructor.test1");
+    TestSystem::start_test(test_2_sizedata_constructor_params,
+    "SizeData_constructor.test2_params");
 
     //    Init_list
-    TestSystem::start_test(test_1_init_constructor, "Init_constructor.test1");
+    TestSystem::start_test(test_1_init_constructor,
+    "Init_constructor.test1");
 
     //    Size and Init_list
-    TestSystem::start_test(test_1_initsize_constructor_params, "SizeInit_constructor.test1");
+    TestSystem::start_test(test_1_initsize_constructor_params,
+    "SizeInit_constructor.test1");
 
     //    Copy
     TestSystem::start_test(test_1_copy_constructor, "Copy_constructor.test1");
-    TestSystem::start_test(test_2_copy_constructor_params, "Copy_constructor.test2_params");
+    TestSystem::start_test(test_2_copy_constructor_params,
+    "Copy_constructor.test2_params");
 
 
     // Functions
@@ -639,30 +666,37 @@ int main() {
     //    push_front()
     TestSystem::start_test(test_1_push_front, "push_front().test1");
     TestSystem::start_test(test_2_push_front_empty, "push_front().test2_empty");
-    TestSystem::start_test(test_3_push_front_capacity_overflow, "push_front().test3_overflow");
-    TestSystem::start_test(test_4_push_front_to_deleted, "push_front().test4_deleted");
+    TestSystem::start_test(test_3_push_front_capacity_overflow,
+    "push_front().test3_overflow");
+    TestSystem::start_test(test_4_push_front_to_deleted,
+    "push_front().test4_deleted");
 
     //    push_back()
     TestSystem::start_test(test_1_push_back, "push_back().test1");
     TestSystem::start_test(test_2_push_back_empty, "push_back().test2_empty");
-    TestSystem::start_test(test_3_push_front_capacity_overflow, "push_back().test3_overflow");
+    TestSystem::start_test(test_3_push_front_capacity_overflow,
+    "push_back().test3_overflow");
 
     //    insert()
-    TestSystem::start_test(test_1_insert_to_invalid_index, "insert().test1_invalid_index");
+    TestSystem::start_test(test_1_insert_to_invalid_index,
+    "insert().test1_invalid_index");
     TestSystem::start_test(test_2_insert, "insert().test2");
     TestSystem::start_test(test_3_insert_to_empty, "insert().test3_empty");
-    TestSystem::start_test(test_4_insert_capacity_overflow, "insert().test4_overflow");
+    TestSystem::start_test(test_4_insert_capacity_overflow,
+    "insert().test4_overflow");
 
     //    pop_front()
     TestSystem::start_test(test_1_pop_front, "pop_front().test1");
-    TestSystem::start_test(test_2_pop_front_to_empty, "pop_front().test2_empty");
+    TestSystem::start_test(test_2_pop_front_to_empty,
+    "pop_front().test2_empty");
 
     //    pop_back()
     TestSystem::start_test(test_1_pop_back, "pop_back().test1");
     TestSystem::start_test(test_2_pop_back_to_empty, "pop_back().test2_empty");
 
     //    erase()
-    TestSystem::start_test(test_1_erase_to_invalid_index, "erase().test1_invalid_index");
+    TestSystem::start_test(test_1_erase_to_invalid_index,
+    "erase().test1_invalid_index");
     TestSystem::start_test(test_2_erase, "erase().test2");
     TestSystem::start_test(test_3_erase_to_empty, "erase().test3_empty");
 
@@ -678,8 +712,10 @@ int main() {
 
     //    resize()
     TestSystem::start_test(test_1_resize_shrink, "resize().test1_shrink");
-    TestSystem::start_test(test_1_resize_enlarge_no_filler, "resize().test1_enlarge_noFiller");
-    TestSystem::start_test(test_1_resize_enlarge_with_filler, "resize().test1_enlarge_withFiller");
+    TestSystem::start_test(test_1_resize_enlarge_no_filler,
+    "resize().test1_enlarge_noFiller");
+    TestSystem::start_test(test_1_resize_enlarge_with_filler,
+    "resize().test1_enlarge_withFiller");
 
     //    emplace()
     TestSystem::start_test(test_1_emplace, "emplace().test1");
@@ -690,7 +726,8 @@ int main() {
 
 
     // Sorting and shuffle
-    TestSystem::start_test(test_1_shuffle_and_sorting, "shuffel and sorting.test1");
+    TestSystem::start_test(test_1_shuffle_and_sorting,
+    "shuffel and sorting.test1");
 
     // Searches
     TestSystem::start_test(test_1_searches, "Searches.test1");

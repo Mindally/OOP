@@ -220,7 +220,9 @@ template<class T> bool TVector<T>::is_full() const noexcept {
 }
 
 template<class T> T& TVector<T>::at(int index) const {
-    if (index > size() || index < 0) throw std::out_of_range("Index out of range");
+    if (index > size() || index < 0) {
+        throw std::out_of_range("Index out of range");
+    }
     if (size() <= 0) throw std::logic_error("The size is 0!");
     int real_index = -1, cnt;
     for (int i = 0; i < _size; i++) {
@@ -252,8 +254,12 @@ template<class T> void TVector<T>::service_print() const {
 }
 
 template<class T> void TVector<T>::emplace(int index, const T& value) {
-    if (index >= size() || index < 0) throw std::out_of_range("Index out of range");
-    if (size() == 0) throw std::logic_error("Placement of the value is impossible! The size is 0!");
+    if (index >= size() || index < 0) {
+        throw std::out_of_range("Index out of range");
+    }
+    if (size() == 0) {
+        throw std::logic_error("Placement of the value is impossible! The size is 0!");
+    }
     at(index) = value;
 }
 
