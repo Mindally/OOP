@@ -30,8 +30,7 @@ void start_test(bool(*test)(), const char* name_of_test) {
         set_color(2, 0);
         std::cout << "[       OK ]" << "\n------------\n\n";
         count_success++;
-    }
-    else {
+    } else {
         set_color(4, 0);
         std::cout << "[  FAILED  ]" << "\n------------\n\n";
         count_failed++;
@@ -43,8 +42,7 @@ template <class T>
 bool check(const T& expected, const T& actual) {
     if (expected == actual) {
         return true;
-    }
-    else {
+    } else {
         std::cerr << "Expected result is " << expected
         << ", but actual is " << actual << "." << std::endl;
         return false;
@@ -76,7 +74,7 @@ void print_final_info() {
         <<(count_failed > 1 ? "s." : ".") << std::endl;
     }
 }
-}; // namespace TestSystem
+};  // namespace TestSystem
 
 // Constructors
 bool test_1_empty_constructor() {

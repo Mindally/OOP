@@ -1,5 +1,6 @@
 // "Copyright 2025 Artem Denisov 33824B1PR2"
 #include <iostream>
+#include <utility>
 #include <random>
 #include <chrono>
 #include <initializer_list>
@@ -258,7 +259,8 @@ template<class T> void TVector<T>::emplace(int index, const T& value) {
         throw std::out_of_range("Index out of range");
     }
     if (size() == 0) {
-        throw std::logic_error("Placement of the value is impossible! The size is 0!");
+        throw std::logic_error
+        ("Placement of the value is impossible! The size is 0!");
     }
     at(index) = value;
 }
@@ -304,7 +306,9 @@ template<class T> void TVector<T>::push_back(const T& value) {
 
 template<class T> void TVector<T>::insert(int index, const T& value) {
     if (_size == 0) _size++;
-    if (index >= size() || index < 0) throw std::out_of_range("Index out of range");
+    if (index >= size() || index < 0) {
+        throw std::out_of_range("Index out of range");
+    }
     if (_states[index] == busy) {
         _size++;
         if (is_full()) reserve(_size + CAPACITY);
@@ -319,8 +323,9 @@ template<class T> void TVector<T>::insert(int index, const T& value) {
 
 // Deletion functions
 template<class T> void TVector<T>::pop_front() {
-    if (size() == 0) throw std::logic_error("Deletion is not possible! The size is 0!");
-
+    if (size() == 0) {
+        throw std::logic_error("Deletion is not possible! The size is 0!");
+    }
     int index = 0;
     for (int i = 0; i < _size; i++) {
         if (_states[i] == busy) {
@@ -330,17 +335,19 @@ template<class T> void TVector<T>::pop_front() {
     }
     if (index == _size - 1) {
         pop_back();
-    }
-    else {
+    } else {
         _states[index] = deleted;
         _deleted++;
     }
-    if (_deleted >= static_cast<int>(_size * DELETED_LIMIT)) effective_deletion();
+    if (_deleted >= static_cast<int>(_size * DELETED_LIMIT)) {
+        effective_deletion();
+    }
 }
 
 template<class T> void TVector<T>::pop_back() {
-    if (size() == 0) throw std::logic_error("Deletion is not possible! The size is 0!");
-
+    if (size() == 0) {
+        throw std::logic_error("Deletion is not possible! The size is 0!");
+    }
     int index = 0;
     for (int i = _size - 1; i >= 0; i--) {
         if (_states[i] == busy) {
@@ -353,14 +360,16 @@ template<class T> void TVector<T>::pop_back() {
 }
 
 template<class T> void TVector<T>::erase(int index) {
-    if (index >= size() || index < 0) throw std::out_of_range("Index out of range");
-    if (size() == 0) throw std::logic_error("Deletion is not possible! The size is 0!");
-
+    if (index >= size() || index < 0) {
+        throw std::out_of_range("Index out of range");
+    }
+    if (size() == 0) {
+        throw std::logic_error("Deletion is not possible! The size is 0!");
+    }
     if (index == _size - 1) {
         pop_back();
         return;
     }
-
     int real_index = 0, cnt = -1;
     for (int i = 0; i < _size; i++) {
         if (_states[i] == busy) {
@@ -373,7 +382,9 @@ template<class T> void TVector<T>::erase(int index) {
     }
     _states[real_index] = deleted;
     _deleted++;
-    if (_deleted >= static_cast<int>(_size * DELETED_LIMIT)) effective_deletion();
+    if (_deleted >= static_cast<int>(_size * DELETED_LIMIT)) {
+        effective_deletion();
+    }
 }
 
 // Memory management functions
@@ -424,8 +435,9 @@ template<class T> void TVector<T>::reserve(int new_capacity) {
 }
 
 template<class T> void TVector<T>::resize(int new_size, bool toFill) {
-    if (new_size < 0) throw std::invalid_argument("The size cannot be negative!");
-
+    if (new_size < 0) {
+        throw std::invalid_argument("The size cannot be negative!");
+    }
     effective_deletion();
     if (new_size < _size) {
         int cnt = 0;
@@ -495,7 +507,9 @@ template<class T> void TVector<T>::effective_deletion() {
 }
 
 template<class T> T& TVector<T>::reverse_at(int index) const {
-    if (index > size() || index < 0) throw std::out_of_range("Index out of range");
+    if (index > size() || index < 0) {
+        throw std::out_of_range("Index out of range");
+    }
     if (size() <= 0) throw std::logic_error("The size is 0!");
     int real_index = -1, cnt;
     for (int i = _size - 1; i >= 0; i--) {
