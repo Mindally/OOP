@@ -1,6 +1,7 @@
 // "Copyright 2025 Artem Denisov 33824B1PR2"
 #include <iostream>
-#include <ctime>
+#include <random>
+#include <chrono>
 #include <initializer_list>
 #pragma once
 #define CAPACITY 15
@@ -13,14 +14,14 @@ template<class T> class TVector {
     int _size = 0;
     int _capacity = CAPACITY;
 
-public:
+ public:
     // Constructors
     TVector();
-    TVector(int);
+    explicit TVector(int);
     TVector(int, const T*);
-    TVector(std::initializer_list<T>);
+    explicit TVector(std::initializer_list<T>);
     TVector(int, std::initializer_list<T>);
-    TVector(const TVector<T>&);
+    explicit TVector(const TVector<T>&);
 
     // Destructor
     ~TVector();
@@ -66,7 +67,7 @@ public:
     bool operator!=(const TVector<T>&) const;
     T& operator[](int) const;
 
-private:
+ private:
     size_t _deleted = 0;
     State* _states = nullptr;
     void effective_deletion();
@@ -89,8 +90,7 @@ template<class T> TVector<T>::TVector(int size) {
         _capacity = 0;
         _data = nullptr;
         _states = nullptr;
-    }
-    else {
+    } else {
         _capacity = size + CAPACITY;
         _data = new T[_capacity];
         _states = new State[_capacity];
@@ -101,7 +101,9 @@ template<class T> TVector<T>::TVector(int size) {
 
 template<class T> TVector<T>::TVector(int size, const T* data) {
     if (_size < 0) throw std::invalid_argument("Size can't be negative!");
-    if (data == nullptr && size > 0) throw std::invalid_argument("Data is nullptr!");
+    if (data == nullptr && size > 0) {
+        throw std::invalid_argument("Data is nullptr!");
+    }
     _size = size;
     _capacity = _size + CAPACITY;
     _data = new T[_capacity];
@@ -320,12 +322,14 @@ template<class T> void TVector<T>::pop_front() {
             break;
         }
     }
-    if (index == _size - 1) pop_back();
+    if (index == _size - 1) {
+        pop_back();
+    }
     else {
         _states[index] = deleted;
         _deleted++;
     }
-    if (_deleted >= (int)(_size * DELETED_LIMIT)) effective_deletion();
+    if (_deleted >= static_cast<int>(_size * DELETED_LIMIT)) effective_deletion();
 }
 
 template<class T> void TVector<T>::pop_back() {
@@ -363,7 +367,7 @@ template<class T> void TVector<T>::erase(int index) {
     }
     _states[real_index] = deleted;
     _deleted++;
-    if (_deleted >= (int)(_size * DELETED_LIMIT)) effective_deletion();
+    if (_deleted >= static_cast<int>(_size * DELETED_LIMIT)) effective_deletion();
 }
 
 // Memory management functions
@@ -424,16 +428,14 @@ template<class T> void TVector<T>::resize(int new_size, bool toFill) {
             if (_states[i] == busy) cnt++;
         }
         _size = cnt;
-    }
-    else {
+    } else {
         if (new_size >= _capacity) reserve(new_size + CAPACITY);
         if (toFill == true) {
             for (int i = _size; i < new_size; i++) {
                 _states[i] = busy;
                 _data[i] = _data[_size - 1];
             }
-        }
-        else {
+        } else {
             for (int i = _size; i < new_size; i++) _states[i] = busy;
         }
         _size = new_size;
@@ -529,9 +531,7 @@ template <class T> int find_all(const TVector<T>& vector, const T& value) {
     if (size_res == 0) {
         result = new int[1];
         result[0] = INT_MIN;
-    }
-
-    else {
+    } else {
         result = new int[size_res];
         for (int i = 0, j = 0; j < size_res; i++) {
             if (vector.at(i) == value) {
@@ -564,11 +564,13 @@ template <class T> void hoara_sort(TVector<T>& mass, int start, int end) {
 }
 
 template <class T> void fisherYatesShuffle(TVector<T>& mass) {
-    srand(time(nullptr));
-    for (int i = mass.size() - 1; i >= 0; i--) {
-        int j = rand() % (i + 1);
-        T temp = mass[i];
-        mass[i] = mass[j];
-        mass[j] = temp;
+    if (mass.size() <= 1) return;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    for (int i = mass.size() - 1; i > 0; i--) {
+        std::uniform_int_distribution<> distr(0, i);
+
+        int j = distr(gen);
+        std::swap(mass[i], mass[j]);
     }
 }

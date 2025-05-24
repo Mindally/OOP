@@ -1,17 +1,7 @@
-#include <iostream>
-
+// "Copyright 2025 Artem Denisov 33824B1PR2"
 #include <windows.h>
+#include <iostream>
 #include "TVector.h"
-
-//#define EASY_VERS
-
-#ifdef EASY_VERS
-
-int main() {
-
-}
-
-#else
 
 template <class T> void info(const TVector<T>& mass) {
     std::cout << "* Size is " << mass.size() << std::endl;
@@ -40,8 +30,7 @@ namespace TestSystem {
             set_color(2, 0);
             std::cout << "[       OK ]" << "\n------------\n\n";
             count_success++;
-        }
-        else {
+        } else {
             set_color(4, 0);
             std::cout << "[  FAILED  ]" << "\n------------\n\n";
             count_failed++;
@@ -53,8 +42,7 @@ namespace TestSystem {
     bool check(const T& expected, const T& actual) {
         if (expected == actual) {
             return true;
-        }
-        else {
+        } else {
             std::cerr << "Expected result is " << expected << ", but actual is " << actual << "." << std::endl;
             return false;
         }
@@ -84,20 +72,7 @@ namespace TestSystem {
     }
 };
 
-/*
-для добавления нового теста сюда добавить функцию с данными следующего теста
-в формате
-bool имя_тестовой_функции() {
-    1. создать тестовые данные
-    2. создать правильный ответ для этих тестовых данных
-    3. выполнить тестируемый метод
-    4. вернуть результат сравнения ожидаемого и получившегося результатов:
-    return TestSystem::check(expected_result, actual_result);
-}
-*/
-
 // Constructors
-
 bool test_1_empty_constructor() {
     TVector<int> empty1, fake_empty(0);
     bool expected_result = true;
@@ -113,8 +88,9 @@ bool test_2_empty_constructor_params() {
     if (empty1.size() == 0 && empty1.capacity() == CAPACITY && empty1.deleted_count() == 0 &&
         empty1.data() != nullptr) {
         actual_result = true;
+    } else {
+        actual_result = false;
     }
-    else actual_result = false;
     return TestSystem::check(expected_result, actual_result);
 }
 
@@ -134,8 +110,9 @@ bool test_2_size_constructor_params() {
     if (vec1.size() == 11 && vec1.capacity() == 25 && vec1.deleted_count() == 0 &&
         vec1.data() != nullptr && vec1[0] == 11) {
         actual_result = true;
+    } else {
+        actual_result = false;
     }
-    else actual_result = false;
     return TestSystem::check(expected_result, actual_result);
 }
 
@@ -158,8 +135,9 @@ bool test_2_sizedata_constructor_params() {
         for (int i = 0; i < vec1.size(); i++) {
             if (vec1[i] != i + 1) actual_result = false;
         }
+    } else {
+        actual_result = false;
     }
-    else actual_result = false;
     return TestSystem::check(expected_result, actual_result);
 }
 
@@ -201,17 +179,12 @@ bool test_2_copy_constructor_params() {
     TVector<int> vec2(vec1);
     bool expected_result = true;
     bool actual_result;
-    if (vec2.size() == 8 && vec2.capacity() == 25 && vec2[1] == 3) {
-        actual_result = true;
-    }
+    if (vec2.size() == 8 && vec2.capacity() == 25 && vec2[1] == 3) actual_result = true;
     else actual_result = false;
     return TestSystem::check(expected_result, actual_result);
 }
 
-// Ещё проверить конструкторы
-
 // Functions
-
 bool test_1_is_empty() {
     TVector<int> empty1, fake_empty(2);
     fake_empty.pop_front();
@@ -605,7 +578,6 @@ bool test_2_assign() {
 
 
 // Sorting and Shuffle
-
 bool test_1_shuffle_and_sorting() {
     bool expected_result = true;
     TVector<int> vec1({ 1, 2, 3 ,4, 5, 6, 7, 8, 9, 10 }), vec2({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -618,14 +590,13 @@ bool test_1_shuffle_and_sorting() {
 }
 
 // Searches
-
 bool test_1_searches() {
     bool expected_result = true;
     TVector<int> vec1({ -11, 2, 7 ,2, 5, 2, 7, 2, 5, 110 });
     info(vec1);
     std::cout << "First 5 index elem = " << find_first(vec1, 5) << std::endl;
     std::cout << "Last 7 index elem = " << find_last(vec1, 7) << std::endl;
-    //    std::cout << "Find 2 indeces elems = " << find_all(vec1, 2) << std::endl;
+    // std::cout << "Find 2 indeces elems = " << find_all(vec1, 2) << std::endl;
     std::cout << "Failed search = " << find_first(vec1, -1) << std::endl;
 
     return true;
@@ -728,5 +699,3 @@ int main() {
     system("pause");
     return 0;
 }
-
-#endif
